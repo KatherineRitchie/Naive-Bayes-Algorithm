@@ -7,3 +7,8 @@ add_executable(naivebayes
         src/NaiveBayes.cpp
         src/NaiveBayes.h
         )
+
+add_executable(testing
+        tests/catch.hpp
+        tests/NaiveBayesTests.cpp
+        )

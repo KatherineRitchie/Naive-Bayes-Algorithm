@@ -60,6 +60,43 @@ CMAKE_SOURCE_DIR = /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie
 CMAKE_BINARY_DIR = /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/cmake-build-debug
 
 #=============================================================================
+# Target rules for target CMakeFiles/testing.dir
+
+# All Build rule for target.
+CMakeFiles/testing.dir/all:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/depend
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/cmake-build-debug/CMakeFiles --progress-num=3,4 "Built target testing"
+.PHONY : CMakeFiles/testing.dir/all
+
+# Include target in all.
+all: CMakeFiles/testing.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/testing.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/cmake-build-debug/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testing.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/testing.dir/rule
+
+# Convenience name for target.
+testing: CMakeFiles/testing.dir/rule
+
+.PHONY : testing
+
+# clean rule for target.
+CMakeFiles/testing.dir/clean:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/clean
+.PHONY : CMakeFiles/testing.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/testing.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/naivebayes.dir
 
 # All Build rule for target.

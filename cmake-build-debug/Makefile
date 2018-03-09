@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named testing
+
+# Build rule for target.
+testing: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testing
+.PHONY : testing
+
+# fast build rule for target.
+testing/fast:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/build
+.PHONY : testing/fast
+
+#=============================================================================
 # Target rules for targets named naivebayes
 
 # Build rule for target.
@@ -150,18 +163,49 @@ src/NaiveBayes.cpp.s:
 	$(MAKE) -f CMakeFiles/naivebayes.dir/build.make CMakeFiles/naivebayes.dir/src/NaiveBayes.cpp.s
 .PHONY : src/NaiveBayes.cpp.s
 
+tests/NaiveBayesTests.o: tests/NaiveBayesTests.cpp.o
+
+.PHONY : tests/NaiveBayesTests.o
+
+# target to build an object file
+tests/NaiveBayesTests.cpp.o:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/tests/NaiveBayesTests.cpp.o
+.PHONY : tests/NaiveBayesTests.cpp.o
+
+tests/NaiveBayesTests.i: tests/NaiveBayesTests.cpp.i
+
+.PHONY : tests/NaiveBayesTests.i
+
+# target to preprocess a source file
+tests/NaiveBayesTests.cpp.i:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/tests/NaiveBayesTests.cpp.i
+.PHONY : tests/NaiveBayesTests.cpp.i
+
+tests/NaiveBayesTests.s: tests/NaiveBayesTests.cpp.s
+
+.PHONY : tests/NaiveBayesTests.s
+
+# target to generate assembly for a file
+tests/NaiveBayesTests.cpp.s:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/tests/NaiveBayesTests.cpp.s
+.PHONY : tests/NaiveBayesTests.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... testing"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... naivebayes"
 	@echo "... src/NaiveBayes.o"
 	@echo "... src/NaiveBayes.i"
 	@echo "... src/NaiveBayes.s"
+	@echo "... tests/NaiveBayesTests.o"
+	@echo "... tests/NaiveBayesTests.i"
+	@echo "... tests/NaiveBayesTests.s"
 .PHONY : help
 
 
