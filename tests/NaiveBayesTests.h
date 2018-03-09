@@ -1,0 +1,8 @@
+//
+// Created by Katherine Ritchie on 3/8/18.
+//
+
+#ifndef NAIVEBAYES_NAIVEBAYESTESTS_H
+#define NAIVEBAYES_NAIVEBAYESTESTS_H
+
+#endif //NAIVEBAYES_NAIVEBAYESTESTS_H

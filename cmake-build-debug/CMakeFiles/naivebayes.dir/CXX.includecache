@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/NaiveBayes.cpp
+NaiveBayes.h
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/NaiveBayes.h
+string
+-
+iostream
+-
+map
+-
+cctype
+-
+iostream
+-
+iostream
+-
+fstream
+-
+string
+-
+fstream
+-
+streambuf
+-
+iostream
+-
+fstream
+-
+string
+-
+
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/NaiveBayes.h
+

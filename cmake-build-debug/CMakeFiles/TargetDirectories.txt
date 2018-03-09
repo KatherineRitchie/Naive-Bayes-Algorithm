@@ -1,0 +1,3 @@
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/cmake-build-debug/CMakeFiles/naivebayes.dir
