@@ -9,6 +9,7 @@
 #include <fstream>
 #include <map>
 #include <cctype>
+#include "vector"
 using namespace std;
 
 #include <iostream>
@@ -21,25 +22,23 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 #include <string>
+
 int main ();
 
 int main ()
 {
     std::cout << "hello world" << std::endl;
 
-    string line;
-    ifstream myfile("/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/data/testimages.txt");
-    //myfile.open("src/names.txt", std::ifstream::in);
-    if (myfile.is_open())
-    {
-        while (getline(myfile,line))
-        {
-            cout << line << '\n';
-        }
-        myfile.close();
-    }
-
-    else cout << "Unable to open file";
+    ofstream myfile;
+    myfile.open ("/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/data/");
+    myfile << "Writing this to a file.\n";
+    myfile.close();
 
     return 0;
+}
+
+vector<vector<double>> CreateProbabilityMap(int target_number, vector<vector<vector<int>>> images) {
+    vector<vector<double>> return_val;
+
+    return return_val;
 }

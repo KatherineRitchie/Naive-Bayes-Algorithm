@@ -74,20 +74,3 @@ vector<int> FileToLabelVector(string filename) {
 }
 
 //cannot accept /n
-vector<vector<int>> StringToFeatureArr(string picture_string) {
-    vector<vector<int>> feature_vector (28, vector<int>(28, int()));
-    int rowIdx = 0;
-    int colIdx = 0;
-    for (auto pixel : picture_string) {
-        for (int row_idx = 0; row_idx < 28; row_idx++) {
-            for (int col_idx = 0; col_idx < 28; row_idx++) {
-                int pixel_val = 1;
-                if (pixel == (char) " ") {
-                    pixel_val = 0;
-                }
-                feature_vector[row_idx][col_idx] = pixel_val;
-            }
-        }
-    }
-    return feature_vector;
-}

@@ -13,10 +13,14 @@ string
 -
 iostream
 -
+fstream
+-
 map
 -
 cctype
 -
+vector
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/vector
 iostream
 -
 iostream
