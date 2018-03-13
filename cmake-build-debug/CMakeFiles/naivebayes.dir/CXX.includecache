@@ -15,6 +15,10 @@ iostream
 -
 sstream
 -
+stdio.h
+-
+math.h
+-
 
 /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/NaiveBayes.h
 string

@@ -8,6 +8,8 @@ using namespace std;
 #include <string>       // std::string
 #include <iostream>     // std::cout
 #include <sstream>
+#include <stdio.h>      /* printf */
+#include <math.h>
 
 int main ();
 
@@ -27,32 +29,35 @@ using DigitProbabilityFeature_t = vector<vector<double>>;
 vector<DigitProbabilityFeature_t> digit_probability_features(10, vector<vector<double>>(28, vector<double>(28, 0.0)));
 DigitProbabilityFeature_t BuildProbabilityFeature(vector<FeatureVector_t> feature_vectors);
 bool BuildModelsFromFeatures(vector<FeatureVector_t> feature_vectors, vector<int> labels);
-vector<double> StringToDoubleVector(string input_string);
-
-
+bool WriteProbabilityModel(vector<DigitProbabilityFeature_t> features);
 double ReadProbabilityModel(int digit, int row, int col);
+
+//COMPARING HEADER
+int WhatNumberIsThis(string image_string);
+double MAPCalculator(int digit, FeatureVector_t image_feature);
 
 int main ()
 {
     std::cout << "hello world" << std::endl;
 
-    vector<int> labels = FileToLabelVector("test");
+    /*vector<int> labels = FileToLabelVector("test");
     vector<string> images = FileToImageStrings("test");
     vector<FeatureVector_t> features = FileToFeatureVectorVector("test");
 
     DigitProbabilityFeature_t my_fun_prob_feature = BuildProbabilityFeature(features);
     BuildModelsFromFeatures(features, labels);
+    WriteProbabilityModel(digit_probability_features);*/
 
-    std::cout << to_string(ReadProbabilityModel(0, 0, 3)) << std::endl;
+    string nine_image_string = "                                                                                                                                                                                                                 ++###+                      ######+                    +######+                    ##+++##+                   +#+  +##+                   +##++###+                   +#######+                   +#######+                    +##+###                       ++##+                       +##+                        ###+                      +###+                       +##+                       +##+                       +##+                       +##+                        ##+                        +#+                         +#+                                             ";
 
 
-    //TODO WHEN YOU GET BACK KATE!!!!! FIND A WAY TO SPLIT A 7840 long string of double, seperated by spaces into a vector of doubles that you could turn into digit_prob_features.
+    std::cout << to_string(WhatNumberIsThis(nine_image_string)) << std::endl;
 
     return 0;
 }
 
 
-//-------------------------LOAD FILE––––––––––––––––––––––––––––––//
+//-------------------------LOAD-FILE––––––––––––––––––-----––––––––––––//
 
 /**
  * This accepts the string "test" or "training" and generates a vector of ints corresponding to the file images.
@@ -167,10 +172,7 @@ vector<FeatureVector_t> FileToFeatureVectorVector(string filename) {
     return features;
 }
 
-//----------------------PROBABILITY-MODEL-FILE---------------------//
-
-bool BuildModelsFromFile();
-bool WriteProbabilityModel(DigitProbabilityFeature_t features);
+//----------------------PROBABILITY-MODEL-FILE-------------------------//
 
 /**
  * Given a vector of FeatureVector_ts, this function generates a 28x28 grid of doubles representing how likely
@@ -197,9 +199,31 @@ DigitProbabilityFeature_t BuildProbabilityFeature(vector<FeatureVector_t> featur
     return probability_feature;
 }
 
+/**
+ * Modifies digit_probability_features global variable and puts in a probability feature corresponding to its index
+ * @param feature_vectors All 28x28 bool grids
+ * @param labels description of images in feature_vectors
+ * @return boolean describing the success of the operation.
+ */
+bool BuildModelsFromFeatures(vector<FeatureVector_t> feature_vectors, vector<int> labels) {
+    std::map<int, vector<FeatureVector_t >> features_for_digit_map;
+    for (int i = 0; i < labels.size(); i++) {
+        features_for_digit_map[labels[i]].push_back(feature_vectors[i]);
+    }
 
+    for (auto digit_element : features_for_digit_map) {
+        digit_probability_features[digit_element.first] = BuildProbabilityFeature(digit_element.second);
+    }
 
-bool WriteProbabilityModel(DigitProbabilityFeature_t features) {
+    return true;
+}
+
+/**
+ * Writes to model.txt file space seperating each double. Represented feature maps of different digit images
+ * @param features 10 features, representing 0 - 9
+ * @return boolean describing the success of the opeartion.
+ */
+bool WriteProbabilityModel(vector<DigitProbabilityFeature_t> features) {
     string file_string = "";
     for (DigitProbabilityFeature_t prob_feature : digit_probability_features) {
         for (auto row : prob_feature) {
@@ -218,6 +242,13 @@ bool WriteProbabilityModel(DigitProbabilityFeature_t features) {
     return true;
 }
 
+/**
+ * Reads model.txt and returns probability value in the digit, row and colum
+ * @param digit 0 - 9
+ * @param row 0 - 27
+ * @param col 0 - 27
+ * @return double of probability of their being a 'marking' in the represented square.
+ */
 double ReadProbabilityModel(int digit, int row, int col) {
 
     //Every digit has 28 by 28 doubles, 8 chars in a double plus a space seperating them.
@@ -233,9 +264,11 @@ double ReadProbabilityModel(int digit, int row, int col) {
         if (getline(model_file,file_content_string)) {
             int char_pos = (digit * chars_in_a_digit) + (row * chars_in_a_row) + (col * chars_in_a_column);
             string double_string = (file_content_string.substr(char_pos, char_pos + chars_in_a_column));
-            vector<double> return_vector = StringToDoubleVector(double_string);
-            return_double = return_vector[0];
-            //get the thing
+
+            //convert string to char array, call strtod
+            char char_array[double_string.size() + 1];
+            strcpy(char_array, double_string.c_str());
+            return_double = strtod(char_array, nullptr);
         }
         model_file.close();
     } else {
@@ -244,54 +277,45 @@ double ReadProbabilityModel(int digit, int row, int col) {
     return return_double;
 }
 
-/**
- * Reads file and populates digit_probability_features.
- * @return boolean describing success of the operation
- */
-bool BuildModelsFromFile() {
-    //the following code was taken and adapted from cpluplus.com
-    ifstream model_file("/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/data/model.txt");
-    vector<double> oned_double_vector;
-    if (model_file.is_open()) {
-        string file_content_string;
-        if (getline(model_file,file_content_string)) {
-            oned_double_vector = StringToDoubleVector(file_content_string);
-        }
-        model_file.close();
-    } else {
-        std::cout << "Unable to open file";
-    }
+//---------------------COMPARING-FILE-------------------------------//
 
-    int curr_double_vector_pos = 0;
-    for (int digit_idx = 0; digit_idx < 10; digit_idx++) {
-        for (int row_idx = 0; row_idx < 28; row_idx++) {
-            for (int col_idx = 0; col_idx < 28; col_idx++) {
-                digit_probability_features[col_idx][row_idx][col_idx] = oned_double_vector[curr_double_vector_pos++];
+/**
+ * uses model.txt to generate maximum a posterior value and then returns most likely digit
+ * @param image_string 784 char string of '#', '+' and ' '.
+ * @return int of the digit.
+ */
+int WhatNumberIsThis(string image_string) {
+    vector<double> p_of_being_this_digit(10, 0.0);
+    FeatureVector_t image_feature = ImageStringToFeatureVector(image_string);
+
+    double min_map_thus_far = 1.0;
+    int min_idx = -1;
+    for (int i = 0; i < 10; i++) {
+        p_of_being_this_digit[i] = MAPCalculator(i, image_feature);
+        if (p_of_being_this_digit[i] < min_map_thus_far) {
+            min_idx = i;
+            min_map_thus_far = p_of_being_this_digit[i];
+        }
+    }
+    return min_idx;
+}
+
+/**
+ * Calculates maximum a posterior value of a feature vector as compared with models.txt
+ * @param digit to compare to
+ * @param image_feature FeatureVector_t
+ * @return double describing the MAP value
+ */
+double MAPCalculator(int digit, FeatureVector_t image_feature) {
+    double map_sum = 0.0;
+    for (int row_idx = 0; row_idx < 28; row_idx++) {
+        for (int col_idx = 0; col_idx < 28; col_idx++) {
+            if (image_feature[row_idx][col_idx]) {
+                map_sum += log(ReadProbabilityModel(digit, row_idx, col_idx));
+            } else {
+                map_sum += log(1 - ReadProbabilityModel(digit, row_idx, col_idx));
             }
         }
     }
-
-    return true;
+    return map_sum;
 }
-
-/**
- * This method takes a space seperated string of doubles and turns it into a vector of doubles.
- * @param input_string space seperated string
- * @return vector<double>
- */
-vector<double> StringToDoubleVector(string input_string) {
-    vector<double> double_vector;
-
-    stringstream input_as_ss(input_string);
-    string double_string;
-    while (getline(input_as_ss, double_string, ' ')) {
-        char char_array[double_string.size() + 1];
-        //code inspired by https://www.geeksforgeeks.org/convert-string-char-array-cpp/
-        strcpy(char_array, double_string.c_str());
-        double_vector.push_back(strtod(char_array, nullptr));
-    }
-
-    return double_vector;
-}
-
-
