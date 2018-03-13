@@ -21,6 +21,7 @@ using FeatureVector_t = vector<vector<bool>>;
 vector<int> FileToLabelVector(string filename);
 vector<string> FileToImageStrings(string filename);
 FeatureVector_t ImageStringToFeatureVector(string image_string);
+FeatureVector_t BoolToFeatureVector(bool boolean);
 vector<FeatureVector_t> FileToFeatureVectorVector(string filename);
 
 
@@ -50,8 +51,23 @@ int main ()
 
     string nine_image_string = "                                                                                                                                                                                                                 ++###+                      ######+                    +######+                    ##+++##+                   +#+  +##+                   +##++###+                   +#######+                   +#######+                    +##+###                       ++##+                       +##+                        ###+                      +###+                       +##+                       +##+                       +##+                       +##+                        ##+                        +#+                         +#+                                             ";
 
+    vector<int> labels = FileToLabelVector("test");
+    vector<string> images = FileToImageStrings("test");
+    vector<FeatureVector_t> features = FileToFeatureVectorVector("test");
+    //DigitProbabilityFeature_t my_fun_prob_feature = BuildProbabilityFeature(features);
 
-    std::cout << to_string(WhatNumberIsThis(nine_image_string)) << std::endl;
+    /*for(int row = 0; row < 28; row++) {
+        for (int col = 0; col < 28; col++) {
+            std::cout << to_string(my_fun_prob_feature[row][col]) << " ";
+        }
+        std::cout << "\n";
+    }*/
+
+    BuildModelsFromFeatures(features, labels);
+    WriteProbabilityModel(digit_probability_features);
+
+    //std::cout << to_string(log(10.0)) << std::endl;
+    //std::cout << to_string(WhatNumberIsThis(nine_image_string)) << std::endl;
 
     return 0;
 }
@@ -156,6 +172,16 @@ FeatureVector_t ImageStringToFeatureVector(string image_string) {
 }
 
 /**
+ * Creates a feature vector composed entirely of one boolean. Used for laplace smoothing.
+ * @param boolean
+ * @return feature vector
+ */
+FeatureVector_t BoolToFeatureVector(bool boolean) {
+    FeatureVector_t feature_vector(28, vector<bool>(28, boolean));
+    return feature_vector;
+}
+
+/**
  * Builds a vector of features based on the filename specified.
  * @param filename should be "test" or "training"
  * @return vector<FeatureVector_t> from the .txt file specified.
@@ -181,6 +207,10 @@ vector<FeatureVector_t> FileToFeatureVectorVector(string filename) {
  * @return A 28x28 feature with probabilities of having a marking in that specific pixel.
  */
 DigitProbabilityFeature_t BuildProbabilityFeature(vector<FeatureVector_t> feature_vectors) {
+    //Adding laplace smoothing
+    feature_vectors.push_back(BoolToFeatureVector(true));
+    feature_vectors.push_back(BoolToFeatureVector(false));
+
     DigitProbabilityFeature_t probability_feature(28, vector<double>(28, 0.0));
     int size = feature_vectors.size();
 
@@ -212,9 +242,16 @@ bool BuildModelsFromFeatures(vector<FeatureVector_t> feature_vectors, vector<int
     }
 
     for (auto digit_element : features_for_digit_map) {
-        digit_probability_features[digit_element.first] = BuildProbabilityFeature(digit_element.second);
+        DigitProbabilityFeature_t digit_feature = BuildProbabilityFeature(digit_element.second);
+        for (auto row : digit_feature) {
+            for (auto col : row) {
+                std::cout << to_string(col) << " ";
+            }
+            std::cout << "\n";
+        }
+        std::cout << "\n";
+        digit_probability_features[digit_element.first] = digit_feature;
     }
-
     return true;
 }
 
@@ -291,7 +328,9 @@ int WhatNumberIsThis(string image_string) {
     double min_map_thus_far = 1.0;
     int min_idx = -1;
     for (int i = 0; i < 10; i++) {
-        p_of_being_this_digit[i] = MAPCalculator(i, image_feature);
+        double map_val =  MAPCalculator(i, image_feature);
+        p_of_being_this_digit[i] = map_val;
+        //std::cout << to_string(map_val) << std::endl;
         if (p_of_being_this_digit[i] < min_map_thus_far) {
             min_idx = i;
             min_map_thus_far = p_of_being_this_digit[i];
@@ -311,11 +350,15 @@ double MAPCalculator(int digit, FeatureVector_t image_feature) {
     for (int row_idx = 0; row_idx < 28; row_idx++) {
         for (int col_idx = 0; col_idx < 28; col_idx++) {
             if (image_feature[row_idx][col_idx]) {
-                map_sum += log(ReadProbabilityModel(digit, row_idx, col_idx));
+                double val = ReadProbabilityModel(digit, row_idx, col_idx);
+                std::cout << to_string(val) << std::endl;
+                std::cout << to_string(log(val)) << std::endl;
+                map_sum += log(val);
             } else {
                 map_sum += log(1 - ReadProbabilityModel(digit, row_idx, col_idx));
             }
         }
     }
+    std::cout << "map sum is : " << to_string(map_sum) << std::endl;
     return map_sum;
 }
