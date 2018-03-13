@@ -6,6 +6,20 @@
 
 #IncludeRegexTransform: 
 
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Feature.h
+vector
+-
+string
+-
+iostream
+-
+fstream
+-
+map
+-
+Feature.h
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Feature.h
+
 /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Load.h
 string
 -
@@ -19,20 +33,24 @@ fstream
 -
 map
 -
+Feature.h
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Feature.h
 
 /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/NaiveBayes.h
+Load.h
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Load.h
 
 /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/tests/NaiveBayesTests.cpp
-NaiveBayesTests.h
-/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/tests/NaiveBayesTests.h
-../src/Load.h
-/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Load.h
-../src/NaiveBayes.h
-/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/NaiveBayes.h
 catch.hpp
 /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/tests/catch.hpp
-
-/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/tests/NaiveBayesTests.h
+../src/NaiveBayes.h
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/NaiveBayes.h
+string
+-
+../src/Feature.h
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Feature.h
+../src/Load.h
+/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/src/Load.h
 
 /Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/tests/catch.hpp
 TargetConditionals.h

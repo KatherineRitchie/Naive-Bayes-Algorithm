@@ -12,6 +12,7 @@
 #include <fstream>
 #include <map>
 #include <cctype>
+#include <map>
 #include "vector"
 
 #endif //NAIVEBAYES_NAIVEBAYES_H
