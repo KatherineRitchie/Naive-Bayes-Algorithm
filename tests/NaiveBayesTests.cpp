@@ -36,7 +36,7 @@ TEST_CASE("Automatic load test functions") {
     DigitProbabilityFeature_t my_fun_prob_feature = BuildProbabilityFeature(features);
     REQUIRE(my_fun_prob_feature[14][14] == 0.622000);
 
-    //REQUIRE(my_fun_prob_features[0] > 0.0);
+    REQUIRE(my_fun_prob_features[0] > 0.0);
 
 
     for (auto digit : digit_probability_features) {
@@ -51,8 +51,14 @@ TEST_CASE("Automatic load test functions") {
     }
 }
 
-TEST_CASE("some tests??") {
-#include "../src/Load.h"
-    //vector<Feature> images_vector = Load::FileToFeatureVector("test");
-    //REQUIRE(images_vector.size() == (int) 1000);
+TEST_CASE("testing compare functions") {
+#include "../src/NaiveBayes.h"
+
+    vector<int> labels = FileToLabelVector("test");
+    vector<string> images = FileToImageStrings("test");
+    //vector<FeatureVector_t> features = FileToFeatureVectorVector("test");
+
+    REQUIRE(label[1], WhatNumberIsThis(images[2]));
+    REQUIRE(label[4], WhatNumberIsThis(images[4]));
+    REQUIRE(label[10], WhatNumberIsThis(images[10]));
 }
