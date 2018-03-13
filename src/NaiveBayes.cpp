@@ -13,7 +13,7 @@ using namespace std;
 
 int main ();
 
-
+string model_txt_string = "";
 
 //LOAD HEADER
 //using keyword recommended by Yash and Dillon and example code they provided was adapted.
@@ -23,7 +23,6 @@ vector<string> FileToImageStrings(string filename);
 FeatureVector_t ImageStringToFeatureVector(string image_string);
 FeatureVector_t BoolToFeatureVector(bool boolean);
 vector<FeatureVector_t> FileToFeatureVectorVector(string filename);
-
 
 //PROBABILITY MODEL HEADER
 using DigitProbabilityFeature_t = vector<vector<double>>;
@@ -37,38 +36,44 @@ double ReadProbabilityModel(int digit, int row, int col);
 int WhatNumberIsThis(string image_string);
 double MAPCalculator(int digit, FeatureVector_t image_feature);
 
+//EVALUATION HEADER
+using ConfusionMatrix_t = vector<vector<int>>;
+ConfusionMatrix_t confusion_matrix(10, vector<int>(10, 0));
+bool BuildConfusionMatrix(vector<int> labels, vector<string> images);
+string PrintConfusionMatrix();
+
 int main ()
 {
     std::cout << "hello world" << std::endl;
 
-    /*vector<int> labels = FileToLabelVector("test");
-    vector<string> images = FileToImageStrings("test");
-    vector<FeatureVector_t> features = FileToFeatureVectorVector("test");
+
+    //TRAINING
+    vector<int> labels = FileToLabelVector("training");
+    vector<FeatureVector_t> features = FileToFeatureVectorVector("training");
 
     DigitProbabilityFeature_t my_fun_prob_feature = BuildProbabilityFeature(features);
     BuildModelsFromFeatures(features, labels);
-    WriteProbabilityModel(digit_probability_features);*/
+    WriteProbabilityModel(digit_probability_features);
 
     string nine_image_string = "                                                                                                                                                                                                                 ++###+                      ######+                    +######+                    ##+++##+                   +#+  +##+                   +##++###+                   +#######+                   +#######+                    +##+###                       ++##+                       +##+                        ###+                      +###+                       +##+                       +##+                       +##+                       +##+                        ##+                        +#+                         +#+                                             ";
 
-    vector<int> labels = FileToLabelVector("test");
+    std::cout << "training complete.... \n";
+
+    //EVALUATING
+    vector<int> test_labels = FileToLabelVector("test");
     vector<string> images = FileToImageStrings("test");
-    vector<FeatureVector_t> features = FileToFeatureVectorVector("test");
-    //DigitProbabilityFeature_t my_fun_prob_feature = BuildProbabilityFeature(features);
 
-    /*for(int row = 0; row < 28; row++) {
-        for (int col = 0; col < 28; col++) {
-            std::cout << to_string(my_fun_prob_feature[row][col]) << " ";
-        }
-        std::cout << "\n";
-    }*/
+    int test_size = 999;
 
-    BuildModelsFromFeatures(features, labels);
-    WriteProbabilityModel(digit_probability_features);
+    vector<int> appended_labels(test_size, 0);
+    vector<string> appended_images(test_size, "");
 
-    //std::cout << to_string(log(10.0)) << std::endl;
-    //std::cout << to_string(WhatNumberIsThis(nine_image_string)) << std::endl;
-
+    for (int i = 0; i < test_size; i++) {
+        appended_labels[i] = test_labels[i];
+        appended_images[i] = images[i];
+    }
+    BuildConfusionMatrix(appended_labels, appended_images);
+    std::cout << PrintConfusionMatrix();
     return 0;
 }
 
@@ -243,13 +248,6 @@ bool BuildModelsFromFeatures(vector<FeatureVector_t> feature_vectors, vector<int
 
     for (auto digit_element : features_for_digit_map) {
         DigitProbabilityFeature_t digit_feature = BuildProbabilityFeature(digit_element.second);
-        for (auto row : digit_feature) {
-            for (auto col : row) {
-                std::cout << to_string(col) << " ";
-            }
-            std::cout << "\n";
-        }
-        std::cout << "\n";
         digit_probability_features[digit_element.first] = digit_feature;
     }
     return true;
@@ -268,14 +266,15 @@ bool WriteProbabilityModel(vector<DigitProbabilityFeature_t> features) {
                 file_string += to_string(col);
                 file_string += " ";
             }
-            file_string += " ";
         }
-        file_string += " ";
     }
-    ofstream model_file;
-    model_file.open("/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/data/model.txt");
-    model_file << file_string;
-    model_file.close();
+
+    //The following lines of code have been commented out so that probability model is written to the model_txt_string.
+    //ofstream model_file;
+    //model_file.open("/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/data/model.txt");
+    //model_file << file_string;
+    //model_file.close();
+    model_txt_string = file_string;
     return true;
 }
 
@@ -295,7 +294,8 @@ double ReadProbabilityModel(int digit, int row, int col) {
 
     double return_double;
     //the following code was taken and adapted from cpluplus.com
-    ifstream model_file("/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/data/model.txt");
+    //it has been commented out so that the model is written to model_txt_string.
+    /*ifstream model_file("/Users/Kate/Documents/GitHub/naivebayes-KatherineRitchie/data/model.txt");
     if (model_file.is_open()) {
         string file_content_string;
         if (getline(model_file,file_content_string)) {
@@ -310,7 +310,16 @@ double ReadProbabilityModel(int digit, int row, int col) {
         model_file.close();
     } else {
         std::cout << "Unable to open file";
-    }
+    }*/
+
+    int char_pos = (digit * chars_in_a_digit) + (row * chars_in_a_row) + (col * chars_in_a_column);
+    string double_string = (model_txt_string.substr(char_pos, char_pos + chars_in_a_column));
+
+    //convert string to char array, call strtod
+    char char_array[double_string.size() + 1];
+    strcpy(char_array, double_string.c_str());
+    return_double = strtod(char_array, nullptr);
+
     return return_double;
 }
 
@@ -325,18 +334,18 @@ int WhatNumberIsThis(string image_string) {
     vector<double> p_of_being_this_digit(10, 0.0);
     FeatureVector_t image_feature = ImageStringToFeatureVector(image_string);
 
-    double min_map_thus_far = 1.0;
-    int min_idx = -1;
+    double max_map_thus_far = -500.0;
+    int max_idx = -1;
     for (int i = 0; i < 10; i++) {
         double map_val =  MAPCalculator(i, image_feature);
         p_of_being_this_digit[i] = map_val;
         //std::cout << to_string(map_val) << std::endl;
-        if (p_of_being_this_digit[i] < min_map_thus_far) {
-            min_idx = i;
-            min_map_thus_far = p_of_being_this_digit[i];
+        if (p_of_being_this_digit[i] > max_map_thus_far) {
+            max_idx = i;
+            max_map_thus_far = p_of_being_this_digit[i];
         }
     }
-    return min_idx;
+    return max_idx;
 }
 
 /**
@@ -351,14 +360,49 @@ double MAPCalculator(int digit, FeatureVector_t image_feature) {
         for (int col_idx = 0; col_idx < 28; col_idx++) {
             if (image_feature[row_idx][col_idx]) {
                 double val = ReadProbabilityModel(digit, row_idx, col_idx);
-                std::cout << to_string(val) << std::endl;
-                std::cout << to_string(log(val)) << std::endl;
+                //std::cout << "prob val is: " << to_string(val) << std::endl;
+                //std::cout << "log(prob val) is: " << to_string(log(val)) << std::endl;
                 map_sum += log(val);
             } else {
                 map_sum += log(1 - ReadProbabilityModel(digit, row_idx, col_idx));
             }
         }
     }
-    std::cout << "map sum is : " << to_string(map_sum) << std::endl;
+    //std::cout << "map sum is : " << to_string(map_sum) << std::endl;
     return map_sum;
+}
+
+//--------------------EVALUATION-FILE-------------------------------//
+
+/**
+ * Builds a confusion matrix of frequency that algorithm correctly characterises image
+ * @param labels vector<int> with actual values of images
+ * @param images vector<string> with pictures of image
+ * @return boolean describing success of build
+ */
+bool BuildConfusionMatrix(vector<int> labels, vector<string> images) {
+    int size = labels.size();
+    for (int i = 0; i < size; i++) {
+        int computed_digit = (int) WhatNumberIsThis(images[i]);
+        confusion_matrix[labels[i]][computed_digit] += 1;
+    }
+    return true;
+}
+
+/**
+ * Prints a string that is formatted to express confusion matrix
+ * @return string of confusion matrix results.
+ */
+string PrintConfusionMatrix() {
+    string output = "";
+
+    for (int row_idx = 0; row_idx < 10; row_idx++) {
+        output += "for digit: " + to_string(row_idx) + "   ";
+        for (int col_idx = 0; col_idx < 10; col_idx++) {
+            output += std::to_string(confusion_matrix[row_idx][col_idx]);
+            output += " ";
+        }
+        output += "\n";
+    }
+    return output;
 }
