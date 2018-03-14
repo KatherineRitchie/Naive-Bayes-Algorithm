@@ -44,18 +44,12 @@ string PrintConfusionMatrix();
 
 int main ()
 {
-    std::cout << "hello world" << std::endl;
-
-
     //TRAINING
     vector<int> labels = FileToLabelVector("training");
     vector<FeatureVector_t> features = FileToFeatureVectorVector("training");
 
-    DigitProbabilityFeature_t my_fun_prob_feature = BuildProbabilityFeature(features);
     BuildModelsFromFeatures(features, labels);
     WriteProbabilityModel(digit_probability_features);
-
-    string nine_image_string = "                                                                                                                                                                                                                 ++###+                      ######+                    +######+                    ##+++##+                   +#+  +##+                   +##++###+                   +#######+                   +#######+                    +##+###                       ++##+                       +##+                        ###+                      +###+                       +##+                       +##+                       +##+                       +##+                        ##+                        +#+                         +#+                                             ";
 
     std::cout << "training complete.... \n";
 
@@ -76,7 +70,6 @@ int main ()
     std::cout << PrintConfusionMatrix();
     return 0;
 }
-
 
 //-------------------------LOAD-FILE––––––––––––––––––-----––––––––––––//
 
@@ -286,7 +279,6 @@ bool WriteProbabilityModel(vector<DigitProbabilityFeature_t> features) {
  * @return double of probability of their being a 'marking' in the represented square.
  */
 double ReadProbabilityModel(int digit, int row, int col) {
-
     //Every digit has 28 by 28 doubles, 8 chars in a double plus a space seperating them.
     int chars_in_a_digit = 28 * 28 * (8 + 1);
     int chars_in_a_row = 28 * (8 + 1);
